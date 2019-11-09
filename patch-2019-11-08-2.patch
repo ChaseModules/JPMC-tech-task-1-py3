@@ -1,0 +1,393 @@
+From 06b2f2960fd3ea15dcfd43f18d082eb9083af899 Mon Sep 17 00:00:00 2001
+From: mariomui <yi.kan.mui@gmail.com>
+Date: Fri, 8 Nov 2019 03:01:29 -0800
+Subject: [PATCH] Complete tech task 1
+
+Format python pleasingly
+
+Create a readme detailing all the steps involved.
+Fix the quote price to average the bid and ask price.
+Create a test for getDataPoint.
+Import getRatio and create a badly written test for getRatio
+Set up auto formatter to make all indents the Google way.
+Freeze the present requirements.
+
+Add a start script to facilitate module
+Completed test for getDataPoint
+bugfix ong getRatio
+
+Add new tests after seeing model solution
+---
+ .gitgnore                          |   4 ++
+ .vscode/settings.json              |   3 +
+ __pycache__/client3.cpython-36.pyc | Bin 0 -> 1256 bytes
+ client3.py                         |  52 ++++++++++-------
+ client_test.py                     |  91 ++++++++++++++++++++++++++---
+ readme.MD                          |  73 +++++++++++++++++++++++
+ requirements.txt                   |   2 +
+ start.sh                           |  15 +++++
+ test.sh                            |   3 +
+ 9 files changed, 214 insertions(+), 29 deletions(-)
+ create mode 100644 .gitgnore
+ create mode 100644 .vscode/settings.json
+ create mode 100644 __pycache__/client3.cpython-36.pyc
+ create mode 100644 readme.MD
+ create mode 100644 requirements.txt
+ create mode 100755 start.sh
+ create mode 100755 test.sh
+
+diff --git a/.gitgnore b/.gitgnore
+new file mode 100644
+index 0000000..0c22164
+--- /dev/null
++++ b/.gitgnore
+@@ -0,0 +1,4 @@
++__pycache
++.vscode
++
++*.patch
+diff --git a/.vscode/settings.json b/.vscode/settings.json
+new file mode 100644
+index 0000000..04e197e
+--- /dev/null
++++ b/.vscode/settings.json
+@@ -0,0 +1,3 @@
++{
++  "python.formatting.provider": "yapf"
++}
+\ No newline at end of file
+diff --git a/__pycache__/client3.cpython-36.pyc b/__pycache__/client3.cpython-36.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..8a88a3cb941fb6e485e19a2a4eb6d06701c27ed3
+GIT binary patch
+literal 1256
+zcmYjQNpBlB6eedl(nyw+)b$eCDKH6;wrcB)178dyU9Gr4ff`PNASl~lFd9BtBh4a{
+zRAH;~Nj>z?Khhu4KfyyUJ>}k04@DnGPLLVAjpXCoJ|48&&Hv<|uRdrJ@;7<s^HKi_
+zN&SUP5J5A-X(b)*RMO>cB^hTZoy^N?yhe#|d0jB>3s2O3CA=Z(!bjPJHPM(j(p>%y
+zEog(kq)XZ-uNJ%m?)Vna@$K<@P#>=Y8?z;`yW{t*<QpmBo0o^Mfv5NR7BpaMNq=H|
+zo8RGGz5_e33EPhe?20CA!yV|t&X8@PCnXoZy|n9V(1cCV>JsGbE?GJ^yZj~A^_=uN
+zudzmQ+M}l4ha}D8Y<_Q~_4FtVvoeXZQK|IN;r`)%crgQc^<^qP|K&RUhZ2$?RiB5v
+zhIEXiPLM6|>Mpsa+G<W0+k%1VwNu&bt?e$Hg}Y6Jw@a?sf?7+{1ry%V88S?*Ha`l^
+zWGQ9|1aX!H<uK4A2nqlJBKSGZW}pIH2Io+Kj5Qt#M6Ba!nHD-Qp3-G9F?C%|qd_W+
+zH<f7uD?3(`*A6DybBs64%2*puma{_iJmX!=N)6J*UDH6nXyw*Gmz64QxqlGZM)B{D
+z;R^*)g;$e2pQVq&KBx%>43knos7J{N^M>LaRG1bj6`)2Sr*Vku3c~NszCYg6kc{>;
+z-oE!}Z+dkQCRqxFK6p62GOcsaeJtqA7IY88DFiAZu1{~{-=gvsT8XX0el}x<R88R%
+zRIu9!BzYfuirVgK0*=P63%YccIDFwCx!7qozaM-HI>0WbrR{T7bQA}1A#U_RAnSPP
+z$!U)nHYm$X+Q8C271==6L+Ialy-@~+URG^du@0UxKGyWiM)?#iWxWaWv6hY_*Q@;~
+z%Hy<%qWMQp?I1+(Kn1Z5KE_cTJy4$o*r`fZu~6&H{pvnEXWXy9IW}(p$w}`n@62SD
+zrGtkO5VuP6+R8Rer#WyoR%O9!66-5-e6uU$S0!=p>5C`NelYa3>hIgMia3WTGAu=O
+zAY5Xcs-cnb5I#cj`kOd)j8jgbFtuSRb3_)C5DQbQV5NAi%3Dc0$qHn0&1x;nEU+q=
+y7W$pGS)9pL?;hv)7&7=`6PMJ7$b7o`TMl!X>o@(D@2*ou?>dY&5hFh88_xgAPeTC!
+
+literal 0
+HcmV?d00001
+
+diff --git a/client3.py b/client3.py
+index f1771c3..2ec2b59 100644
+--- a/client3.py
++++ b/client3.py
+@@ -22,38 +22,48 @@ import urllib.request
+ import time
+ import json
+ import random
+-
++from decimal import Decimal
+ # Server API URLs
+ QUERY = "http://localhost:8080/query?id={}"
+ 
+ # 500 server request
+ N = 500
+ 
++
+ def getDataPoint(quote):
+-	""" Produce all of the needed values to generate a datapoint """
+-	""" ------------- Update this function ------------- """
+-	stock = quote['stock']
+-	bid_price = float(quote['top_bid']['price'])
+-	ask_price = float(quote['top_ask']['price'])
+-	price = bid_price
+-	return stock, bid_price, ask_price, price
++  """ Produce all of the needed values to generate a datapoint """
++  """ ------------- Update this function ------------- """
++  stock = quote['stock']
++  bid_price = float(quote['top_bid']['price'])
++  ask_price = float(quote['top_ask']['price'])
++  price = (bid_price + ask_price) / 2
++  return stock, bid_price, ask_price, round(price, 2)
++
+ 
+ def getRatio(price_a, price_b):
+-	""" Get ratio of price_a and price_b """
+-	""" ------------- Update this function ------------- """
+-	""" Also create some unit tests for this function in client_test.py """
+-	return 1
++  """ Get ratio of price_a and price_b """
++  """ ------------- Update this function ------------- """
++  """ Also create some unit tests for this function in client_test.py """
++  if (bool(price_b)):
++    x = Decimal((price_a / price_b))
++    return float(round(x, 2))
++  else:
++    return False
++
+ 
+ # Main
+ if __name__ == "__main__":
+ 
+-	# Query the price once every N seconds.
+-	for _ in iter(range(N)):
+-		quotes = json.loads(urllib.request.urlopen(QUERY.format(random.random())).read())
+-
+-		""" ----------- Update to get the ratio --------------- """
+-		for quote in quotes:
+-			stock, bid_price, ask_price, price = getDataPoint(quote)
+-			print ("Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price))
++  # Query the price once every N seconds.
++  for _ in iter(range(N)):
++    quotes = json.loads(
++        urllib.request.urlopen(QUERY.format(random.random())).read())
++    """ ----------- Update to get the ratio --------------- """
++    prices = {}
++    for quote in quotes:
++      stock, bid_price, ask_price, price = getDataPoint(quote)
++      prices[stock] = price
++      print("Quoted %s at (bid:%s, ask:%s, price:%s)" %
++            (stock, bid_price, ask_price, price))
+ 
+-		print ("Ratio %s" % getRatio(price, price))
++    print("Ratio %s" % getRatio(prices['ABC'], prices['DEF']))
+diff --git a/client_test.py b/client_test.py
+index af2bf26..7b63458 100644
+--- a/client_test.py
++++ b/client_test.py
+@@ -1,25 +1,100 @@
+ import unittest
+-from client3 import getDataPoint
++from client3 import getDataPoint, getRatio
++
+ 
+ class ClientTest(unittest.TestCase):
++
+   def test_getDataPoint_calculatePrice(self):
+     quotes = [
+-      {'top_ask': {'price': 121.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
+-      {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
++        {
++            "top_ask": {
++                "price": 121.2,
++                "size": 36
++            },
++            "timestamp": "2019-02-11 22:06:30.572453",
++            "top_bid": {
++                "price": 120.48,
++                "size": 109
++            },
++            "id": "0.109974697771",
++            "stock": "ABC",
++        },
++        {
++            "top_ask": {
++                "price": 121.68,
++                "size": 4
++            },
++            "timestamp": "2019-02-11 22:06:30.572453",
++            "top_bid": {
++                "price": 117.87,
++                "size": 81
++            },
++            "id": "0.109974697771",
++            "stock": "DEF",
++        },
+     ]
+     """ ------------ Add the assertion below ------------ """
++    quote0 = "ABC", 120.48, 121.2, (120.48 + 121.2) / 2
++
++    self.assertEqual(getDataPoint(quotes[0]), quote0)
+ 
+   def test_getDataPoint_calculatePriceBidGreaterThanAsk(self):
+     quotes = [
+-      {'top_ask': {'price': 119.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
+-      {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
++        {
++            "top_ask": {
++                "price": 119.2,
++                "size": 36
++            },
++            "timestamp": "2019-02-11 22:06:30.572453",
++            "top_bid": {
++                "price": 120.48,
++                "size": 109
++            },
++            "id": "0.109974697771",
++            "stock": "ABC",
++        },
++        {
++            "top_ask": {
++                "price": 121.68,
++                "size": 4
++            },
++            "timestamp": "2019-02-11 22:06:30.572453",
++            "top_bid": {
++                "price": 117.87,
++                "size": 81
++            },
++            "id": "0.109974697771",
++            "stock": "DEF",
++        },
+     ]
+     """ ------------ Add the assertion below ------------ """
+-
++    for quote in quotes:
++      expectedResult = (
++          quote["stock"],
++          quote["top_bid"]["price"],
++          quote["top_ask"]["price"],
++          round(((quote["top_bid"]["price"] + quote["top_ask"]["price"]) / 2),
++                2),
++      )
++      self.assertEqual(getDataPoint(quote), expectedResult)
+ 
+   """ ------------ Add more unit tests ------------ """
+ 
++  def test_getRatio_calculateRatioAgainstAZeroPrice(self):
++    self.assertEqual(getRatio(100, 0), False)
++
++  def test_getRatio_caclulateRatioOnFirstPriceZero(self):
++    self.assertEqual(getRatio(0, 1233.3), 0)
++
++  def test_getRatio_calculateRatioAgainstLess(self):
++    self.assertGreater(getRatio(123.32, 53.23), 1)
++
++  def test_getRatio_calculateRatioAgainstGreater(self):
++    self.assertLess(getRatio(123.32, 153.23), 1)
++
++  def test_getRatio_calculateRatioAgainstGreater(self):
++    self.assertEqual(getRatio(1, 1), 1)
+ 
+ 
+-if __name__ == '__main__':
+-    unittest.main()
++if __name__ == "__main__":
++  unittest.main()
+diff --git a/readme.MD b/readme.MD
+new file mode 100644
+index 0000000..53c578a
+--- /dev/null
++++ b/readme.MD
+@@ -0,0 +1,73 @@
++# Chase Module 0
++
++## How to use
++
++* `chmod 755 start.sh`
++  * allow the start script permissions.
++* `./start.sh`
++  * if detects if 8080 is being used, if so, run the client, if not run the server and the client.
++  * So dont change the server port.
++
++## pre-setup
++
++* install yapf (vscode will prompt you globally)
++  * if vscode doesn't prompt you. Go to your global python directory  (which python3.7 or whatever version you have.)
++  * `<pythonhomedirectory>/python -m pip install yapf --user`
++    * then in your vscode user settings, in the yapf arguments
++    * ["--style", "{based_on_style: chromium, indent_width: 2}"]
++    * there's a gui that helps you do it too.
++  
++## EASY setup
++
++* install pyenv
++* pyenv install
++  * `brew install pyenv`
++  * initializer script
++    `echo 'eval "$(pyenv init -)"' >> ~/.bash_profile`
++* set global defaults
++  * pyenv global '3.6.2'
++* pyenv local `<versionno>`
++  * this will install that version in your home directory
++  * the place you local will use stuff from there.
++  * highly unrecommended. you dont wanna install wholly unnecessary stuff
++
++## Currrent setup
++
++* above instruction but wihtout using pyenv local
++* brew install pyenv-virtualenv
++* `brew install pyenv-virtualenv`
++* `echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bash_profile`
++* `pyenv virtualenv <python-version> <name>`
++  * creates a virtualenv around your app
++    * so pip install will only install packages in that virtualenv.
++* pyenv activate `<name>`
++  * or use tab completions to select your env.
++  * a prompt called `<name>` should be next to your stuff.
++  * I call mine 3.6.2chase
++* virtualenv will now be called fakeenv because tldr.
++
++## Steps
++
++### Step 1 activate your fakeenv
++
++* pyenv activate 3.6.2chase
++* pip install python-dateutil
++  * pip freeze > requirements.txt
++    * if you ever decide to delete your fakeenv
++      * install a new fakeenv
++        * pip install -r requirements.txt (-r denotes install packages in order);
++
++### Step 2
++
++* python server3.py &
++  * why the & ?
++    * it's annoying that a single terminal is needed to keep a server up.
++    * close your terminal and the server will shutdown
++    * You'll want the server for debugging later though if you do flask apps
++* python client3.py > test.txt
++  * sees all the ratios.
++  * `grep -c Quoted text.txt`
++    * there's 1000 instancces of quoted but 500 actual api requests.
++* API Requests
++  * `curl 'http://localhost:8080/query?id=1'`
++  * or fire up postman, api route is /query
+diff --git a/requirements.txt b/requirements.txt
+new file mode 100644
+index 0000000..994ddea
+--- /dev/null
++++ b/requirements.txt
+@@ -0,0 +1,2 @@
++python-dateutil==2.8.1
++six==1.13.0
+diff --git a/start.sh b/start.sh
+new file mode 100755
+index 0000000..923448d
+--- /dev/null
++++ b/start.sh
+@@ -0,0 +1,15 @@
++#! /bin/bash
++# if (test lsof -i tcp:8080 | wc -l $gte 0);
++#   then
++#     echo "hey"
++# fi
++lsof -i tcp:8080 | wc -l | (read wc; 
++  if (test $wc -eq 0); then
++    python server3.py &
++    sleep 5
++    python client3.py
++  elif (test $wc -ge 0); then
++    python client3.py
++  fi
++)
++# python client3.py
+\ No newline at end of file
+diff --git a/test.sh b/test.sh
+new file mode 100755
+index 0000000..f33b626
+--- /dev/null
++++ b/test.sh
+@@ -0,0 +1,3 @@
++#! /bin/sh
++
++python client_test.py
+\ No newline at end of file
+-- 
+2.23.0
+
